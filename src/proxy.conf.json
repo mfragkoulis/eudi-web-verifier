@@ -1,13 +1,13 @@
 {
   "/ui": {
-      "target": "https://dev.verifier-backend.eudiw.dev",
-      "secure": false,
+      "target": "https://snf-895798.vm.okeanos.grnet.gr",
+      "secure": true,
       "logLevel": "debug",
       "changeOrigin": true
   },
   "/wallet": {
-    "target": "https://dev.verifier-backend.eudiw.dev",
-    "secure": false,
+    "target": "https://snf-895798.vm.okeanos.grnet.gr",
+    "secure": true,
     "logLevel": "debug",
     "changeOrigin": true
   }
