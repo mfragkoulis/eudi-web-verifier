@@ -11,6 +11,8 @@ import {WalletResponseProcessorService} from "@features/invoke-wallet/services/w
 import {MatCardModule} from "@angular/material/card";
 import {MatButtonModule} from "@angular/material/button";
 import {MatDialog, MatDialogModule} from "@angular/material/dialog";
+import {HttpService} from '@network/http/http.service';
+import {HttpHeaders} from '@angular/common/http';
 
 @Component({
   selector: 'vc-presentations-results',
@@ -31,7 +33,8 @@ import {MatDialog, MatDialogModule} from "@angular/material/dialog";
 })
 export class PresentationsResultsComponent implements OnInit {
   constructor(
-    private readonly responseProcessor: WalletResponseProcessorService
+    private readonly responseProcessor: WalletResponseProcessorService,
+    private readonly httpService: HttpService
   ) {
   }
 
@@ -43,7 +46,30 @@ export class PresentationsResultsComponent implements OnInit {
   ngOnInit(): void {
     this.presentationRequest = this.concludedTransaction.presentationDefinition;
     let sharedAttestations: SharedAttestation[] = this.responseProcessor.mapVpTokenToAttestations(this.concludedTransaction);
-    this.attestations = this.flatten(sharedAttestations)
+    this.attestations = this.flatten(sharedAttestations);
+
+    this.postAttestations()
+  }
+
+  postAttestations(): void {
+    const data = {
+	    "profile": JSON.stringify(this.attestations),
+	    "entity": "ΚΕΠ"
+    };
+    console.log("Attestations", this.attestations);
+    console.log("Post attestation data", data);
+
+    const headers = {
+	    'Content-Type': 'application/json',
+    };
+    const requestOptions = {
+	    'headers': new HttpHeaders(headers),
+    };
+
+    this.httpService.postE(
+	    "http://83.212.72.114/api/eudi_present/", data, requestOptions
+    )
+    .subscribe(response => console.log(response))
   }
 
   flatten(sharedAttestations: SharedAttestation[]): Single[] {

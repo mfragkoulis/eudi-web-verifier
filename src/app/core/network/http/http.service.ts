@@ -26,6 +26,10 @@ export class HttpService extends NetworkRequest {
 		return this.POST<T, K>({ url: this.getUrl(endpoint), body, options });
 	}
 
+	public postE <T, K> (endpoint: string, body: K, options?: IRequestOptions): Observable<T> {
+		return this.POST<T, K>({ url: endpoint, body, options });
+	}
+
 	public put <T> (endpoint: string, body: T, options?: IRequestOptions): Observable<T | ArrayBuffer> {
 		return this.PUT({ url: this.getUrl(endpoint), body: body, options: options });
 	}
