@@ -91,7 +91,12 @@ export class QrCodeComponent implements OnInit, OnDestroy {
 
   ngAfterViewInit() {
     if (this.isCrossDevice) {
-      new QRCode(this.qrCode.nativeElement, this.redirectUrl);
+      console.log('Redirect url: ', this.redirectUrl);
+      // Avoid code length overflow error for strings between ~192--225 characters
+      // by padding the string to increase its length.
+      // Alternative: switch to https://github.com/KeeeX/qrcodejs
+      // See https://github.com/davidshimjs/qrcodejs/issues/78
+      new QRCode(this.qrCode.nativeElement, this.redirectUrl.padEnd(300));
     }
   }
 
