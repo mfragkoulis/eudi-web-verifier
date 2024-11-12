@@ -13,6 +13,8 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatDialog, MatDialogModule} from "@angular/material/dialog";
 import {HttpService} from '@network/http/http.service';
 import {HttpHeaders} from '@angular/common/http';
+import {LocalStorageService} from '@app/core/services/local-storage.service';
+import { TxData } from '@features/home/components/home/home.component';
 
 @Component({
   selector: 'vc-presentations-results',
@@ -42,6 +44,8 @@ export class PresentationsResultsComponent implements OnInit {
   presentationRequest!: PresentationDefinition;
   attestations!: Single[];
   readonly dialog: MatDialog = inject(MatDialog);
+  readonly localStorageService: LocalStorageService = inject(LocalStorageService);
+  txdata: TxData = {'application_id': '', 'target': ''};
 
   ngOnInit(): void {
     this.presentationRequest = this.concludedTransaction.presentationDefinition;
@@ -52,10 +56,13 @@ export class PresentationsResultsComponent implements OnInit {
   }
 
   postAttestations(): void {
-    const data = {
-	    "profile": JSON.stringify(this.attestations),
+    this.txdata = JSON.parse(this.localStorageService.get('txdata') || '');
+    let data = {
+	    "profile": this.attestations,
 	    "entity": "ΚΕΠ"
     };
+    data = Object.assign(this.txdata, data);
+    console.log("Tx data", this.txdata);
     console.log("Attestations", this.attestations);
     console.log("Post attestation data", data);
 

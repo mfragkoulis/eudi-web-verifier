@@ -6,6 +6,9 @@
           <vc-input-scheme></vc-input-scheme>
           <vc-radio-group [options]="optionsPIDAuthentication" (choseEvent)="setNavigateTarget($event)"></vc-radio-group>
           <vc-body-actions [actions]="actions" (clicked)="submit()"></vc-body-actions>
+          <div class="body" style="text-align: center">
+	    <p> Presentation id: <b>{{txdata.application_id}}</b> </p>
+          </div>
         </ng-container>
       </mat-tab>
       <mat-tab #mdl label="mDL authentication">

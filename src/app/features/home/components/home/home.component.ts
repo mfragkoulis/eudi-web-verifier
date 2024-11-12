@@ -18,6 +18,13 @@ import {AttestationSelectableModelService} from '@app/core/services/attestation-
 import {OpenLogsComponent} from '@app/shared/elements/open-logs/open-logs.component';
 import {MatDialog, MatDialogModule} from '@angular/material/dialog';
 import {MsoMdocPresentationService} from "@core/services/mso-mdoc-presentation.service";
+import {Router, ActivatedRoute, Params} from '@angular/router';
+import {Buffer} from 'buffer';
+
+export interface TxData {
+  application_id: string;
+  target: string;
+}
 
 @Component({
   standalone: true,
@@ -43,6 +50,7 @@ export class HomeComponent implements OnInit {
   optionsPIDAuthentication: MenuOption[] = [];
   optionsMDLAuthentication: MenuOption[] = [];
   optionsAgeVerification: MenuOption[] = [];
+  txdata: TxData = {'application_id': '', 'target': ''};
 
   private dialog: MatDialog = inject(MatDialog);
 
@@ -53,7 +61,8 @@ export class HomeComponent implements OnInit {
     private readonly attestationSelectableModelService: AttestationSelectableModelService,
     private readonly homeService: HomeService,
     private readonly localStorageService: LocalStorageService,
-    private readonly msoMdocPresentationService: MsoMdocPresentationService
+    private readonly msoMdocPresentationService: MsoMdocPresentationService,
+    private readonly activatedRoute: ActivatedRoute
   ) {
     this.localStorageService.remove(constants.ACTIVE_TRANSACTION);
   }
@@ -63,6 +72,14 @@ export class HomeComponent implements OnInit {
     this.optionsPIDAuthentication = this.homeService.optionsPIDAuthentication;
     this.optionsMDLAuthentication = this.homeService.optionsMDLAuthentication;
     this.optionsAgeVerification = this.homeService.optionsAgeVerification;
+    this.activatedRoute.queryParams.subscribe(params => {
+      const txdata_param = params['transactionData'];
+      console.log('txdata_param', txdata_param);
+      const txdata_string = Buffer.from(txdata_param, 'base64').toString();
+      this.txdata = JSON.parse(txdata_string);
+      console.log('txdata', this.txdata);
+      this.localStorageService.set('txdata', txdata_string);
+    });
   }
 
   private navTarget = '';
