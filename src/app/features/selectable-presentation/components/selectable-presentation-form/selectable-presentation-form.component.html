@@ -6,7 +6,7 @@
     </div>
       <ng-container  *ngFor="let field of formFields; index as idx; trackBy: trackByFn" >
         <div class="controls">
-          <mat-checkbox (click)="handle(field)" color="primary">
+          <mat-checkbox [checked]="check(field)" (click)="handle(field)" color="primary">
             {{field.label}}
           </mat-checkbox>
         </div>

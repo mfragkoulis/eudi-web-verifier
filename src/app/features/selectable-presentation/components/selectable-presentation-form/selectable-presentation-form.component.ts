@@ -31,6 +31,8 @@ export class SelectablePresentationFormComponent implements OnInit {
   private readonly navigateService!: NavigateService;
   private readonly localStorageService!: LocalStorageService;
   private readonly bodyActionsService!: BodyActionsService;
+  private readonly preselectedFormFields = ['Family name', 'Given name', 'Birthdate', 'Expiry date', 'Issuance date', 'Issuing country', 'Document number'];
+  private initFormFields: FormSelectableField[] = [];
 
   constructor(
     private readonly selectableFormNextAction: SelectableFormNextAction,
@@ -76,6 +78,29 @@ export class SelectablePresentationFormComponent implements OnInit {
     } else {
       console.error('invalid JSON format');
     }
+  }
+
+  check(data: FormSelectableField) {
+    const label = data?.label;
+    const value = data?.value;
+    // Check checkboxes once initially. Then rely on the status of selectedFields.
+    if (!this.initFormFields.includes(data)) {
+      this.initFormFields.push(data);
+    } else {
+      return this.isExist(value.path[0]);
+    }
+    const checked = this.preselectedFormFields.includes(label);
+    if (checked && !this.isExist(value.path[0])) {
+      this.selectedFields.push(value);
+    }
+    // Update draft presentation with selected fields
+    this.draftPresentation.presentation_definition.input_descriptors[0].constraints.fields = this.selectedFields;
+    // refresh PD text from model
+    this.presentationDefinitionText = this.convertJSONtoString(this.draftPresentation.presentation_definition);
+    if (checked) {
+      this.enableNextButton();
+    }
+    return checked;
   }
 
   handle(data: FormSelectableField) {
